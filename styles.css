@@ -124,6 +124,67 @@ html, body {
   transform: scale(0.97);
 }
 
+/* ── Skip moon + popup ── */
+.skip-moon {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  font-size: 1.6rem;
+  cursor: pointer;
+  opacity: 0.35;
+  z-index: 10;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  user-select: none;
+}
+
+.skip-moon:hover {
+  opacity: 0.7;
+  transform: scale(1.15);
+}
+
+.skip-popup {
+  position: absolute;
+  bottom: 60px;
+  right: 18px;
+  background: rgba(20, 20, 40, 0.92);
+  border: 1px solid rgba(255, 107, 157, 0.3);
+  border-radius: 16px;
+  padding: 16px 20px;
+  max-width: 260px;
+  z-index: 10;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  animation: fadeInUp 0.35s ease;
+}
+
+.skip-popup.hidden {
+  display: none;
+}
+
+.skip-popup p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.88rem;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.btn-skip {
+  background: linear-gradient(135deg, #c084fc, #a855f7);
+  color: #fff;
+  border: none;
+  padding: 8px 28px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-skip:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(192, 132, 252, 0.4);
+}
+
 /* ═══════════════════════════════════════════════════════════
    SCREEN 2: Proposal
    ═══════════════════════════════════════════════════════════ */
@@ -544,5 +605,734 @@ html, body {
   .celebration-scroll {
     padding: 24px 12px 40px;
     gap: 16px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CONFETTI CANVAS
+   ═══════════════════════════════════════════════════════════ */
+.confetti-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.confetti-canvas.active {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   "NEXT SCREEN" BUTTONS (shared for screens 3–6)
+   ═══════════════════════════════════════════════════════════ */
+.btn-next-screen {
+  position: relative;
+  z-index: 20;
+  margin-top: 20px;
+  padding: 14px 36px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: var(--font-main);
+  color: #fff;
+  background: var(--accent-pink);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: transform 0.25s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 20px rgba(255, 107, 157, 0.4);
+}
+.btn-next-screen:hover {
+  background: var(--accent-pink-hover);
+  transform: scale(1.06);
+  box-shadow: 0 0 30px rgba(255, 107, 157, 0.6);
+}
+.btn-next-screen:active {
+  transform: scale(0.97);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 4: Love Letter
+   ═══════════════════════════════════════════════════════════ */
+#screen-letter {
+  background: var(--bg-dark);
+  flex-direction: column;
+}
+
+.letter-container {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 20px;
+  max-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Name input prompt ── */
+.letter-prompt {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+}
+
+.letter-prompt-sub {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  margin-top: -8px;
+}
+
+.name-input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.name-input {
+  width: 280px;
+  padding: 14px 20px;
+  border: 2px solid rgba(255, 107, 157, 0.4);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-family: var(--font-main);
+  font-size: 1.05rem;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.name-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.name-input:focus {
+  border-color: var(--accent-pink);
+  box-shadow: 0 0 16px rgba(255, 107, 157, 0.3);
+}
+
+.btn-name-submit {
+  background: linear-gradient(135deg, var(--accent-pink), var(--accent-magenta));
+  color: #fff;
+  border: none;
+  padding: 12px 36px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-name-submit:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
+}
+
+.name-error {
+  color: #ff6b9d;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  min-height: 1.4em;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.name-error.visible {
+  opacity: 1;
+}
+
+/* ── Shake animation for wrong input ── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+.shake {
+  animation: shake 0.5s ease;
+}
+
+/* ── Date error message ── */
+.date-error {
+  color: #ff6b9d;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-align: center;
+  min-height: 1.4em;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  margin-top: -4px;
+}
+
+.date-error.visible {
+  opacity: 1;
+}
+
+/* ── Envelope ── */
+.envelope {
+  position: relative;
+  width: 420px;
+  min-height: 220px;
+  cursor: pointer;
+  perspective: 600px;
+}
+
+.envelope-body {
+  background: linear-gradient(135deg, #ff9494, #ff6b9d);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(255, 107, 157, 0.3);
+  overflow: visible;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px 16px 28px;
+}
+
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(135deg, #ff6b9d, #e84393);
+  clip-path: polygon(0 0, 50% 100%, 100% 0);
+  z-index: 3;
+  transform-origin: top center;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.envelope.open .envelope-flap {
+  transform: rotateX(180deg);
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Letter inside envelope ── */
+.letter {
+  width: 100%;
+  max-width: 380px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 28px 24px;
+  color: #333;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+              opacity 0.6s ease 0.3s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.envelope.open .letter {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.letter-greeting {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent-pink);
+  margin-bottom: 12px;
+}
+
+.letter-body {
+  margin-bottom: 16px;
+  font-style: italic;
+  white-space: pre-line;
+}
+
+.letter-closing {
+  font-weight: 600;
+  text-align: right;
+  color: var(--accent-pink);
+}
+
+.tap-hint {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.6);
+  animation: pulse 2s infinite;
+  transition: opacity 0.4s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 5: Date Picker
+   ═══════════════════════════════════════════════════════════ */
+#screen-datepicker {
+  background: var(--bg-dark);
+}
+
+.datepicker-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.datepicker-card h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.datepicker-sub {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1rem;
+}
+
+.date-input {
+  font-family: var(--font-main);
+  font-size: 1.1rem;
+  padding: 12px 24px;
+  border: 2px solid rgba(255, 107, 157, 0.4);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.date-input:focus {
+  border-color: var(--accent-pink);
+  box-shadow: 0 0 16px rgba(255, 107, 157, 0.3);
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 6: Plan the Date
+   ═══════════════════════════════════════════════════════════ */
+#screen-plandate {
+  background: var(--bg-dark);
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-y: auto;
+}
+
+.plandate-scroll {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  max-width: 600px;
+  padding: 40px 20px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.plan-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.plan-tab {
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 10px 24px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.plan-tab.active {
+  background: var(--accent-pink);
+  border-color: var(--accent-pink);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(255, 107, 157, 0.4);
+}
+
+.plan-tab:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+  width: 100%;
+  animation: fadeInUp 0.4s ease;
+}
+
+.hidden-grid {
+  display: none !important;
+}
+
+.plan-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.plan-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.plan-option.selected {
+  background: rgba(255, 107, 157, 0.15);
+  border-color: var(--accent-pink);
+  box-shadow: 0 0 16px rgba(255, 107, 157, 0.2);
+}
+
+.plan-option .option-emoji {
+  font-size: 2.2rem;
+}
+
+.plan-option .option-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.plan-option .option-check {
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.plan-option.selected .option-check {
+  background: var(--accent-pink);
+  border-color: var(--accent-pink);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 7: Final — Countdown + Flower Bouquet
+   ═══════════════════════════════════════════════════════════ */
+#screen-final {
+  background: var(--bg-dark);
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-y: auto;
+}
+
+.final-scroll {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  max-width: 600px;
+  padding: 40px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.countdown-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.countdown-card h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.countdown-timer {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+  padding: 16px 12px;
+  background: rgba(255, 107, 157, 0.12);
+  border: 1px solid rgba(255, 107, 157, 0.3);
+  border-radius: 16px;
+}
+
+.countdown-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-pink);
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Flower Bouquet ── */
+.bouquet-container {
+  position: relative;
+  width: 280px;
+  height: 360px;
+}
+
+.bouquet {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.flower {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+}
+
+.flower-1 { top: 20px; left: 50%; transform: translateX(-50%); }
+.flower-2 { top: 60px; left: 20%; }
+.flower-3 { top: 60px; right: 20%; }
+
+.petals {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.petal {
+  position: absolute;
+  width: 24px;
+  height: 36px;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  opacity: 0;
+  animation: petalOpen 1.2s ease forwards;
+  animation-play-state: paused;
+}
+
+.flower-1 .petal { background: #ff6b9d; }
+.flower-2 .petal { background: #ff9494; }
+.flower-3 .petal { background: #c084fc; }
+
+.petal:nth-child(1) { animation-delay: 0.5s; transform: translate(-50%, -100%) rotate(0deg); }
+.petal:nth-child(2) { animation-delay: 0.65s; transform: translate(-50%, -100%) rotate(60deg); }
+.petal:nth-child(3) { animation-delay: 0.8s; transform: translate(-50%, -100%) rotate(120deg); }
+.petal:nth-child(4) { animation-delay: 0.95s; transform: translate(-50%, -100%) rotate(180deg); }
+.petal:nth-child(5) { animation-delay: 1.1s; transform: translate(-50%, -100%) rotate(240deg); }
+.petal:nth-child(6) { animation-delay: 1.25s; transform: translate(-50%, -100%) rotate(300deg); }
+
+@keyframes petalOpen {
+  from { opacity: 0; transform: translate(-50%, -100%) rotate(var(--r, 0deg)) scale(0.3); }
+  to   { opacity: 1; transform: translate(-50%, -100%) rotate(var(--r, 0deg)) scale(1); }
+}
+
+.flower-center {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #fbbf24;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: centerPop 0.4s ease 1.4s forwards;
+  animation-play-state: paused;
+}
+
+@keyframes centerPop {
+  from { transform: translate(-50%, -50%) scale(0); }
+  to   { transform: translate(-50%, -50%) scale(1); }
+}
+
+.stem {
+  position: absolute;
+  width: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, #4ade80, #22c55e);
+  transform-origin: top center;
+  animation: stemGrow 0.8s ease forwards;
+  animation-play-state: paused;
+}
+
+.stem-1 { top: 85px; left: 50%; transform: translateX(-50%) scaleY(0); height: 140px; }
+.stem-2 { top: 125px; left: 28%; transform: rotate(12deg) scaleY(0); height: 120px; }
+.stem-3 { top: 125px; right: 28%; transform: rotate(-12deg) scaleY(0); height: 120px; }
+
+@keyframes stemGrow {
+  from { transform: translateX(-50%) scaleY(0); }
+  to   { transform: translateX(-50%) scaleY(1); }
+}
+
+.leaf {
+  position: absolute;
+  width: 28px;
+  height: 14px;
+  border-radius: 50% 50% 50% 0;
+  background: #4ade80;
+  opacity: 0;
+  animation: leafPop 0.5s ease 1s forwards;
+  animation-play-state: paused;
+}
+
+.leaf-1 { top: 160px; left: 42%; transform: rotate(-30deg); }
+.leaf-2 { top: 180px; left: 54%; transform: rotate(30deg); border-radius: 50% 50% 0 50%; }
+
+@keyframes leafPop {
+  from { opacity: 0; transform: scale(0) rotate(var(--lr, -30deg)); }
+  to   { opacity: 1; transform: scale(1) rotate(var(--lr, -30deg)); }
+}
+
+.vase {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 100px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px 8px 20px 20px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+.vase-water {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60%;
+  background: linear-gradient(to top, rgba(96, 165, 250, 0.4), rgba(96, 165, 250, 0.1));
+  border-radius: 0 0 18px 18px;
+}
+
+.falling-petal {
+  position: absolute;
+  width: 10px;
+  height: 14px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  animation-play-state: paused;
+}
+
+.fp-1 { background: #ff6b9d; top: 30px; left: 45%; animation: petalFall 4s ease-in 2s infinite; }
+.fp-2 { background: #ff9494; top: 40px; left: 55%; animation: petalFall 5s ease-in 2.5s infinite; }
+.fp-3 { background: #c084fc; top: 50px; left: 60%; animation: petalFall 4.5s ease-in 3s infinite; }
+.fp-4 { background: #ff6b9d; top: 25px; left: 35%; animation: petalFall 5.5s ease-in 3.5s infinite; }
+.fp-5 { background: #ff9494; top: 45px; left: 50%; animation: petalFall 4s ease-in 4s infinite; }
+
+@keyframes petalFall {
+  0%   { opacity: 0.8; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(300px) rotate(120deg) translateX(40px); }
+}
+
+.final-message {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  animation: pulse 3s infinite;
+}
+
+/* Start animations when screen is active */
+#screen-final.active .petal,
+#screen-final.active .flower-center,
+#screen-final.active .stem,
+#screen-final.active .leaf,
+#screen-final.active .falling-petal {
+  animation-play-state: running;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE: New screens
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .letter-prompt {
+    font-size: 1.15rem;
+  }
+
+  .name-input {
+    width: 240px;
+    font-size: 0.95rem;
+  }
+
+  .envelope {
+    width: 92vw;
+    max-width: 360px;
+    min-height: 180px;
+  }
+
+  .letter {
+    max-width: 100%;
+    padding: 20px 16px;
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  .datepicker-card h1 {
+    font-size: 1.3rem;
+  }
+
+  .plan-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .plan-tab {
+    font-size: 0.85rem;
+    padding: 8px 18px;
+  }
+
+  .countdown-number {
+    font-size: 1.6rem;
+  }
+
+  .countdown-unit {
+    min-width: 60px;
+    padding: 12px 8px;
+  }
+
+  .bouquet-container {
+    width: 240px;
+    height: 310px;
+  }
+
+  .btn-next-screen {
+    font-size: 0.95rem;
+    padding: 12px 28px;
   }
 }

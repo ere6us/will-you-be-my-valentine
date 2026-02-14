@@ -100,6 +100,59 @@
       loop: true,
     },
 
+    // ── Love Letter (Prank Contract) ──
+    letter: {
+      allowedNames: [
+        "zainab", "gungun", "gunzie", "gunsss", "baby", "love",
+        "zainab imran", "pretty lil baby", "pretty little baby",
+        "lil baby", "little baby",
+      ],
+      wrongNameMessages: [
+        "Nuh uh, that's not the name I expected 😏",
+        "Nice try, but nope! Try again 🙃",
+        "Who's that? I don't know them 🤔",
+        "Imposter detected! 🚨",
+        "Hmm... that doesn't ring a bell 🔔",
+        "Are you sure that's YOUR name? 😂",
+      ],
+      greeting: "OFFICIAL LOVE CONTRACT 📜",
+      body: "By entering your name above, you — the undersigned — hereby agree to the following irrevocable, non-negotiable, eternally binding terms:\\n\\n1. You can NEVER leave me. Ever. No take-backs.\\n2. You must accept unlimited hugs, forehead kisses, and terrible jokes.\\n3. You are legally required to laugh at all my jokes (even the bad ones).\\n4. You must tolerate my 'Bhook lag raha hai' at least 47 times a day.\\n5. You must reply to my texts with at least one heart emoji per day.\\n6. Date nights are mandatory. No excuses.\\n7. You agree that I am the cutest person you know (non-negotiable).\\n\\nViolation of any clause results in extra cuddles (the harshest punishment).",
+      closing: "Signed, sealed, and you can't do anything about it 😈❤️",
+    },
+
+    // ── Plan the Date — Food, Dessert, Activities ──
+    dateOptions: {
+      food: [
+        { name: "Pizza", emoji: "🍕" },
+        { name: "Sushi", emoji: "🍣" },
+        { name: "Pasta", emoji: "🍝" },
+        { name: "Burgers", emoji: "🍔" },
+        { name: "Korean", emoji: "🥘" },
+        { name: "Steak", emoji: "🥩" },
+        { name: "Biryani", emoji: "🍚" },
+        { name: "Tacos", emoji: "🌮" },
+      ],
+      dessert: [
+        { name: "Ice Cream", emoji: "🍦" },
+        { name: "Cake", emoji: "🎂" },
+        { name: "Boba", emoji: "🧋" },
+        { name: "Churros", emoji: "🍩" },
+        { name: "Mochi", emoji: "🍡" },
+        { name: "Chocolate", emoji: "🍫" },
+      ],
+      activities: [
+        { name: "Movie", emoji: "🎬" },
+        { name: "Arcade", emoji: "🕹️" },
+        { name: "Walk", emoji: "🌳" },
+        { name: "Aquarium", emoji: "🐠" },
+        { name: "Stargazing", emoji: "🌌" },
+        { name: "Cooking", emoji: "👩‍🍳" },
+      ],
+    },
+
+    // ── Final Screen ──
+    finalMessage: "Forever yours ❤️",
+
     // ── Font (must match the Google Font loaded in index.html) ──
     fontFamily: "'Poppins', sans-serif",
   };
@@ -437,7 +490,13 @@
       window.removeEventListener("resize", resize);
     }
 
-    return { init, start, destroy };
+    /** Skip directly to the final lines + continue button. */
+    function skipToEnd() {
+      // Jump frame to where all final lines are fully visible + continue shown
+      frameNumber = continueFrame;
+    }
+
+    return { init, start, destroy, skipToEnd };
   })();
 
 
@@ -546,10 +605,12 @@
         }
       });
 
-      // ── Yes button → transition to celebration ──
+      // ── Yes button → confetti burst, then transition to celebration ──
       btnYes.addEventListener("click", () => {
-        ScreenManager.transitionTo("screen-celebration", () => {
-          Celebration.init();
+        Confetti.fire(() => {
+          ScreenManager.transitionTo("screen-celebration", () => {
+            Celebration.init();
+          });
         });
       });
 
@@ -661,6 +722,13 @@
       ambientStars = createAmbientStarfield(bgCanvas, 120);
       ambientStars.init();
       ambientStars.start();
+
+      // ── Button to love letter ──
+      document.getElementById("btn-to-letter").addEventListener("click", () => {
+        ScreenManager.transitionTo("screen-letter", () => {
+          LoveLetter.init();
+        });
+      });
     }
 
     /** Spawn floating heart elements periodically. */
@@ -696,6 +764,365 @@
 
 
   /* ═══════════════════════════════════════════════════════════
+     CONFETTI MODULE
+     Canvas-based confetti burst on Yes click.
+     ═══════════════════════════════════════════════════════════ */
+
+  const Confetti = (() => {
+    const PARTICLE_COUNT = 120;
+    const DURATION = 2000; // ms
+
+    function fire(onDone) {
+      const canvas = document.getElementById("confetti-canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      canvas.classList.add("active");
+
+      const colors = ["#ff6b9d","#ff9494","#fbbf24","#c084fc","#60a5fa","#4ade80","#f472b6"];
+      const particles = [];
+
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 0.7) * 14,
+          w: 6 + Math.random() * 6,
+          h: 4 + Math.random() * 8,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 12,
+          gravity: 0.12 + Math.random() * 0.08,
+        });
+      }
+
+      const start = performance.now();
+
+      function draw(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / DURATION, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (const p of particles) {
+          p.x += p.vx;
+          p.vy += p.gravity;
+          p.y += p.vy;
+          p.rotation += p.rotSpeed;
+          p.vx *= 0.99;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.globalAlpha = 1 - progress;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(draw);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          canvas.classList.remove("active");
+          if (onDone) onDone();
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    return { fire };
+  })();
+
+
+  /* ═══════════════════════════════════════════════════════════
+     LOVE LETTER MODULE
+     Envelope tap → opens to reveal animated letter.
+     ═══════════════════════════════════════════════════════════ */
+
+  const LoveLetter = (() => {
+    let ambientStars = null;
+    let wrongAttempts = 0;
+
+    function init() {
+      const nameInput = document.getElementById("name-input");
+      const btnSubmit = document.getElementById("btn-name-submit");
+      const nameError = document.getElementById("name-error");
+      const nameGroup = document.getElementById("name-input-group");
+      const prompt = document.getElementById("letter-prompt");
+      const promptSub = document.getElementById("letter-prompt-sub");
+      const envelope = document.getElementById("envelope");
+      const btnToDate = document.getElementById("btn-to-date");
+
+      function tryOpen() {
+        const entered = nameInput.value.trim().toLowerCase();
+        if (!entered) {
+          nameError.textContent = "Come on, type your name! 😤";
+          nameError.classList.add("visible");
+          nameInput.classList.add("shake");
+          setTimeout(() => nameInput.classList.remove("shake"), 500);
+          return;
+        }
+
+        if (CONFIG.letter.allowedNames.includes(entered)) {
+          // ✅ Correct name — reveal prank contract
+          nameError.classList.remove("visible");
+          nameGroup.style.display = "none";
+          promptSub.style.display = "none";
+          prompt.textContent = "Haha Gotcha! 😈";
+
+          // Show and auto-open envelope
+          envelope.style.display = "block";
+          setTimeout(() => {
+            envelope.classList.add("open");
+            // Show next button after letter animation
+            setTimeout(() => {
+              btnToDate.style.display = "inline-block";
+              btnToDate.style.animation = "fadeInUp 0.5s ease";
+            }, 1200);
+          }, 400);
+
+          // Populate prank contract
+          document.getElementById("letter-greeting").textContent = CONFIG.letter.greeting;
+          document.getElementById("letter-body").textContent =
+            CONFIG.letter.body.replace(/\\n/g, "\n");
+          document.getElementById("letter-closing").textContent = CONFIG.letter.closing;
+        } else {
+          // ❌ Wrong name
+          const msgs = CONFIG.letter.wrongNameMessages;
+          nameError.textContent = msgs[wrongAttempts % msgs.length];
+          nameError.classList.add("visible");
+          nameInput.classList.add("shake");
+          setTimeout(() => nameInput.classList.remove("shake"), 500);
+          wrongAttempts++;
+          nameInput.value = "";
+          nameInput.focus();
+        }
+      }
+
+      btnSubmit.addEventListener("click", tryOpen);
+      nameInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") tryOpen();
+      });
+
+      // Navigate to date picker
+      btnToDate.addEventListener("click", () => {
+        ScreenManager.transitionTo("screen-datepicker", () => {
+          DatePickerScreen.init();
+        });
+      });
+
+      // Ambient starfield
+      const bgCanvas = document.getElementById("starfield-bg-3");
+      ambientStars = createAmbientStarfield(bgCanvas, 100);
+      ambientStars.init();
+      ambientStars.start();
+    }
+
+    return { init };
+  })();
+
+
+  /* ═══════════════════════════════════════════════════════════
+     DATE PICKER MODULE
+     ═══════════════════════════════════════════════════════════ */
+
+  const DatePickerScreen = (() => {
+    let ambientStars = null;
+    let selectedDate = null;
+    let noDateAttempts = 0;
+
+    const funnyDateMessages = [
+      "Umm... you forgot to pick a date 😅",
+      "No date = no date night. Pick one! 🙄",
+      "The calendar is RIGHT there 👆",
+      "You really thought you could skip this? 😂",
+      "I'm not moving until you pick a date 😤",
+      "Pretty please pick a date? 🥺📅",
+    ];
+
+    function init() {
+      const dateInput = document.getElementById("date-input");
+      const btnToPlan = document.getElementById("btn-to-plan");
+      const dateError = document.getElementById("date-error");
+
+      // Set min date to today
+      const today = new Date().toISOString().split("T")[0];
+      dateInput.setAttribute("min", today);
+
+      dateInput.addEventListener("change", () => {
+        selectedDate = dateInput.value;
+        // Clear error when a date is selected
+        if (selectedDate) {
+          dateError.classList.remove("visible");
+        }
+      });
+
+      btnToPlan.addEventListener("click", () => {
+        if (!selectedDate) {
+          dateError.textContent = funnyDateMessages[noDateAttempts % funnyDateMessages.length];
+          dateError.classList.add("visible");
+          dateInput.classList.add("shake");
+          setTimeout(() => dateInput.classList.remove("shake"), 500);
+          noDateAttempts++;
+          return;
+        }
+        ScreenManager.transitionTo("screen-plandate", () => {
+          PlanDate.init();
+        });
+      });
+
+      // Ambient starfield
+      const bgCanvas = document.getElementById("starfield-bg-4");
+      ambientStars = createAmbientStarfield(bgCanvas, 100);
+      ambientStars.init();
+      ambientStars.start();
+    }
+
+    function getDate() { return selectedDate; }
+
+    return { init, getDate };
+  })();
+
+
+  /* ═══════════════════════════════════════════════════════════
+     PLAN DATE MODULE
+     Food / Dessert / Activity selection with tabs.
+     ═══════════════════════════════════════════════════════════ */
+
+  const PlanDate = (() => {
+    let ambientStars = null;
+
+    function createGrid(items, gridId) {
+      const grid = document.getElementById(gridId);
+      grid.innerHTML = "";
+
+      items.forEach((item) => {
+        const option = document.createElement("div");
+        option.classList.add("plan-option");
+        option.innerHTML = `
+          <span class="option-emoji">${item.emoji}</span>
+          <span class="option-name">${item.name}</span>
+          <span class="option-check">✓</span>
+        `;
+        option.addEventListener("click", () => {
+          option.classList.toggle("selected");
+        });
+        grid.appendChild(option);
+      });
+    }
+
+    function init() {
+      // Populate grids from CONFIG
+      createGrid(CONFIG.dateOptions.food, "grid-food");
+      createGrid(CONFIG.dateOptions.dessert, "grid-dessert");
+      createGrid(CONFIG.dateOptions.activities, "grid-activities");
+
+      // Tab switching
+      const tabs = document.querySelectorAll(".plan-tab");
+      const grids = {
+        food: document.getElementById("grid-food"),
+        dessert: document.getElementById("grid-dessert"),
+        activities: document.getElementById("grid-activities"),
+      };
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+          const target = tab.getAttribute("data-tab");
+          Object.keys(grids).forEach((key) => {
+            grids[key].classList.toggle("hidden-grid", key !== target);
+          });
+        });
+      });
+
+      // Navigate to final screen
+      document.getElementById("btn-to-final").addEventListener("click", () => {
+        ScreenManager.transitionTo("screen-final", () => {
+          FinalScreen.init();
+        });
+      });
+
+      // Ambient starfield
+      const bgCanvas = document.getElementById("starfield-bg-5");
+      ambientStars = createAmbientStarfield(bgCanvas, 100);
+      ambientStars.init();
+      ambientStars.start();
+    }
+
+    return { init };
+  })();
+
+
+  /* ═══════════════════════════════════════════════════════════
+     FINAL SCREEN MODULE
+     Countdown timer + flower bouquet animations.
+     ═══════════════════════════════════════════════════════════ */
+
+  const FinalScreen = (() => {
+    let ambientStars = null;
+    let countdownInterval = null;
+
+    function init() {
+      // Set final message
+      document.getElementById("final-message").textContent = CONFIG.finalMessage;
+
+      // Start countdown
+      startCountdown();
+
+      // Ambient starfield
+      const bgCanvas = document.getElementById("starfield-bg-6");
+      ambientStars = createAmbientStarfield(bgCanvas, 100);
+      ambientStars.init();
+      ambientStars.start();
+    }
+
+    function startCountdown() {
+      const dateStr = DatePickerScreen.getDate();
+      if (!dateStr) {
+        document.getElementById("countdown-title").textContent = "Every moment with you is a gift 💗";
+        document.getElementById("countdown-timer").style.display = "none";
+        return;
+      }
+
+      const targetDate = new Date(dateStr + "T18:00:00"); // default 6 PM
+
+      function update() {
+        const now = new Date();
+        const diff = targetDate - now;
+
+        if (diff <= 0) {
+          document.getElementById("countdown-title").textContent = "It's date day! 🎉💖";
+          document.getElementById("cd-days").textContent = "0";
+          document.getElementById("cd-hours").textContent = "0";
+          document.getElementById("cd-mins").textContent = "0";
+          document.getElementById("cd-secs").textContent = "0";
+          if (countdownInterval) clearInterval(countdownInterval);
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const mins = Math.floor((diff / (1000 * 60)) % 60);
+        const secs = Math.floor((diff / 1000) % 60);
+
+        document.getElementById("cd-days").textContent = days;
+        document.getElementById("cd-hours").textContent = hours;
+        document.getElementById("cd-mins").textContent = mins;
+        document.getElementById("cd-secs").textContent = secs;
+      }
+
+      update();
+      countdownInterval = setInterval(update, 1000);
+    }
+
+    return { init };
+  })();
+
+
+  /* ═══════════════════════════════════════════════════════════
      BOOTSTRAP
      Wait for fonts to load, then initialize Screen 1.
      ═══════════════════════════════════════════════════════════ */
@@ -716,6 +1143,21 @@
       ScreenManager.transitionTo("screen-proposal", () => {
         Proposal.init();
       });
+    });
+
+    // ── Skip moon shortcut ──
+    const skipMoon = document.getElementById("skip-moon");
+    const skipPopup = document.getElementById("skip-popup");
+    const btnSkip = document.getElementById("btn-skip");
+
+    skipMoon.addEventListener("click", () => {
+      skipPopup.classList.toggle("hidden");
+    });
+
+    btnSkip.addEventListener("click", () => {
+      skipPopup.classList.add("hidden");
+      skipMoon.style.display = "none";
+      Starfield.skipToEnd();
     });
   });
 

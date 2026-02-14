@@ -27,6 +27,12 @@
     <section id="screen-starfield" class="screen active">
       <canvas id="starfield"></canvas>
       <button id="btn-continue" class="btn btn-continue hidden">Continue 💌</button>
+      <!-- Skip shortcut -->
+      <div id="skip-moon" class="skip-moon">🌙</div>
+      <div id="skip-popup" class="skip-popup hidden">
+        <p>Argh, I am bored of your baatein, please skip 😴</p>
+        <button id="btn-skip" class="btn btn-skip">Skip ⏩</button>
+      </div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
@@ -64,10 +70,166 @@
           <div class="carousel-track" id="carousel-track"></div>
           <button class="carousel-arrow carousel-arrow-right" id="carousel-right">›</button>
         </div>
+
+        <button id="btn-to-letter" class="btn btn-next-screen">I have something for you 💌</button>
       </div>
       <div id="hearts-container"></div>
       <audio id="celebration-audio" preload="none"></audio>
     </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SCREEN 4: Love Letter
+         Animated envelope that opens to reveal a letter.
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-letter" class="screen">
+      <canvas id="starfield-bg-3" class="bg-canvas"></canvas>
+      <div class="letter-container">
+        <p class="letter-prompt" id="letter-prompt">I have a letter for someone special... 💌</p>
+        <p class="letter-prompt-sub" id="letter-prompt-sub">But first, tell me — what's your name?</p>
+        <div class="name-input-group" id="name-input-group">
+          <input type="text" id="name-input" class="name-input" placeholder="Enter your name..." autocomplete="off" />
+          <button id="btn-name-submit" class="btn btn-name-submit">Open Letter 💌</button>
+        </div>
+        <p class="name-error" id="name-error"></p>
+
+        <div class="envelope" id="envelope" style="display:none;">
+          <div class="envelope-flap"></div>
+          <div class="envelope-body">
+            <div class="letter" id="letter">
+              <p class="letter-greeting" id="letter-greeting"></p>
+              <p class="letter-body" id="letter-body"></p>
+              <p class="letter-closing" id="letter-closing"></p>
+            </div>
+          </div>
+        </div>
+        <button id="btn-to-date" class="btn btn-next-screen" style="display:none;">Let's plan our date! 📅</button>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SCREEN 5: Date Picker
+         Pick a date for the Valentine's date.
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-datepicker" class="screen">
+      <canvas id="starfield-bg-4" class="bg-canvas"></canvas>
+      <div class="card datepicker-card">
+        <h1>When should we go? 📅</h1>
+        <p class="datepicker-sub">Pick the perfect day for our date</p>
+        <input type="date" id="date-input" class="date-input" />
+        <p class="date-error" id="date-error"></p>
+        <button id="btn-to-plan" class="btn btn-next-screen">Next 💕</button>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SCREEN 6: Plan the Date
+         Food, dessert, and activity selection grids.
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-plandate" class="screen">
+      <canvas id="starfield-bg-5" class="bg-canvas"></canvas>
+      <div class="plandate-scroll">
+        <!-- Tab navigation -->
+        <div class="plan-tabs">
+          <button class="plan-tab active" data-tab="food">Food 🍕</button>
+          <button class="plan-tab" data-tab="dessert">Dessert 🍰</button>
+          <button class="plan-tab" data-tab="activities">Activities 🎮</button>
+        </div>
+
+        <!-- Food Grid -->
+        <div class="plan-grid" id="grid-food">
+          <!-- Populated by JS from CONFIG -->
+        </div>
+
+        <!-- Dessert Grid -->
+        <div class="plan-grid hidden-grid" id="grid-dessert"></div>
+
+        <!-- Activities Grid -->
+        <div class="plan-grid hidden-grid" id="grid-activities"></div>
+
+        <button id="btn-to-final" class="btn btn-next-screen">Can't wait! 🥰</button>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SCREEN 7: Final Page
+         Countdown timer + animated flower bouquet.
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-final" class="screen">
+      <canvas id="starfield-bg-6" class="bg-canvas"></canvas>
+      <div class="final-scroll">
+        <!-- Countdown -->
+        <div class="card countdown-card">
+          <h1 id="countdown-title">Counting down to our date 💗</h1>
+          <div class="countdown-timer" id="countdown-timer">
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-days">0</span>
+              <span class="countdown-label">Days</span>
+            </div>
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-hours">0</span>
+              <span class="countdown-label">Hours</span>
+            </div>
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-mins">0</span>
+              <span class="countdown-label">Minutes</span>
+            </div>
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-secs">0</span>
+              <span class="countdown-label">Seconds</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flower Bouquet -->
+        <div class="bouquet-container">
+          <div class="bouquet">
+            <div class="flower flower-1">
+              <div class="petals">
+                <div class="petal"></div><div class="petal"></div>
+                <div class="petal"></div><div class="petal"></div>
+                <div class="petal"></div><div class="petal"></div>
+              </div>
+              <div class="flower-center"></div>
+            </div>
+            <div class="stem stem-1"></div>
+            <div class="flower flower-2">
+              <div class="petals">
+                <div class="petal"></div><div class="petal"></div>
+                <div class="petal"></div><div class="petal"></div>
+                <div class="petal"></div><div class="petal"></div>
+              </div>
+              <div class="flower-center"></div>
+            </div>
+            <div class="stem stem-2"></div>
+            <div class="flower flower-3">
+              <div class="petals">
+                <div class="petal"></div><div class="petal"></div>
+                <div class="petal"></div><div class="petal"></div>
+                <div class="petal"></div><div class="petal"></div>
+              </div>
+              <div class="flower-center"></div>
+            </div>
+            <div class="stem stem-3"></div>
+            <div class="leaf leaf-1"></div>
+            <div class="leaf leaf-2"></div>
+            <div class="vase">
+              <div class="vase-water"></div>
+            </div>
+          </div>
+          <!-- Falling petals -->
+          <div class="falling-petal fp-1"></div>
+          <div class="falling-petal fp-2"></div>
+          <div class="falling-petal fp-3"></div>
+          <div class="falling-petal fp-4"></div>
+          <div class="falling-petal fp-5"></div>
+        </div>
+
+        <p class="final-message" id="final-message">Forever yours ❤️</p>
+      </div>
+    </section>
+
+    <!-- Confetti Canvas (overlays everything during Yes click) -->
+    <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
 
     <script src="script.js"></script>
   </body>
