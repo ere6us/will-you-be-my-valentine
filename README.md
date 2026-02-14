@@ -4,6 +4,8 @@ A cinematic, multi-screen Valentine's Day website with twinkling starfield, roma
 
 **Pure HTML/CSS/JS** — no frameworks, no backend, no build step. Open `index.html` and it just works.
 
+🌐 **Live Demo**: [ere6us.github.io/will-you-be-my-valentine](https://ere6us.github.io/will-you-be-my-valentine/)
+
 ---
 
 ## ✨ Features
