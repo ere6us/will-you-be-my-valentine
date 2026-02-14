@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A special Valentine's Day message just for you ❤️" />
+    <title>Will You Be My Valentine? 💌</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💖</text></svg>" />
+
+    <!-- Google Font: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+
+    <!-- ═══════════════════════════════════════════════════
+         SCREEN 1: Starfield Intro
+         Full-screen canvas with twinkling stars and
+         sequentially fading romantic messages.
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-starfield" class="screen active">
+      <canvas id="starfield"></canvas>
+      <button id="btn-continue" class="btn btn-continue hidden">Continue 💌</button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SCREEN 2: Proposal
+         "Will you be my Valentine?" with Yes/No buttons.
+         Clicking No makes Yes grow larger each time.
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-proposal" class="screen">
+      <canvas id="starfield-bg" class="bg-canvas"></canvas>
+      <div class="card proposal-card">
+        <h1 id="proposal-question"></h1>
+        <div class="btn-group">
+          <button id="btn-yes" class="btn btn-yes"></button>
+          <button id="btn-no" class="btn btn-no"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SCREEN 3: Celebration
+         GIF, final message, floating hearts, optional audio.
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-celebration" class="screen">
+      <canvas id="starfield-bg-2" class="bg-canvas"></canvas>
+      <div class="celebration-scroll">
+        <!-- Messages (centered) -->
+        <div class="card celebration-card">
+          <h1 id="celebration-msg"></h1>
+          <p id="celebration-sub"></p>
+        </div>
+
+        <!-- Photo Carousel -->
+        <div class="carousel">
+          <button class="carousel-arrow carousel-arrow-left" id="carousel-left">‹</button>
+          <div class="carousel-track" id="carousel-track"></div>
+          <button class="carousel-arrow carousel-arrow-right" id="carousel-right">›</button>
+        </div>
+      </div>
+      <div id="hearts-container"></div>
+      <audio id="celebration-audio" preload="none"></audio>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>
