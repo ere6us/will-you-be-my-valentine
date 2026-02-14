@@ -124,29 +124,32 @@
     dateOptions: {
       food: [
         { name: "Pizza", emoji: "🍕" },
-        { name: "Sushi", emoji: "🍣" },
         { name: "Pasta", emoji: "🍝" },
         { name: "Burgers", emoji: "🍔" },
-        { name: "Korean", emoji: "🥘" },
-        { name: "Steak", emoji: "🥩" },
         { name: "Biryani", emoji: "🍚" },
-        { name: "Tacos", emoji: "🌮" },
+        { name: "PaniPuri", emoji: "🥣" },
+        { name: "Chinese", emoji: "🥡" },
       ],
       dessert: [
+        { name: "Gulab Jamun", emoji: "🟤" },
         { name: "Ice Cream", emoji: "🍦" },
-        { name: "Cake", emoji: "🎂" },
-        { name: "Boba", emoji: "🧋" },
-        { name: "Churros", emoji: "🍩" },
-        { name: "Mochi", emoji: "🍡" },
+        { name: "Halwa", emoji: "🍮" },
         { name: "Chocolate", emoji: "🍫" },
+        { name: "Cold Coffee", emoji: "🥤" },
+        { name: "Tiramisu", emoji: "🍰" },
+        { name: "Shahi Tukda", emoji: "🍞" },
+        { name: "Kaju Katli", emoji: "🔶" },
       ],
       activities: [
-        { name: "Movie", emoji: "🎬" },
-        { name: "Arcade", emoji: "🕹️" },
-        { name: "Walk", emoji: "🌳" },
+        { name: "Go Karting", emoji: "🏎️" },
         { name: "Aquarium", emoji: "🐠" },
-        { name: "Stargazing", emoji: "🌌" },
+        { name: "Beach Walking", emoji: "🏖️" },
+        { name: "Wonderla", emoji: "🎢" },
+        { name: "Karaoke", emoji: "🎤" },
+        { name: "Movies", emoji: "🎬" },
+        { name: "Arcade", emoji: "🕹️" },
         { name: "Cooking", emoji: "👩‍🍳" },
+        { name: "Fighting", emoji: "🥊" },
       ],
     },
 
@@ -1039,7 +1042,26 @@
       });
 
       // Navigate to final screen
+      const planError = document.getElementById("plan-error");
+      let noPickAttempts = 0;
+
+      const funnyPlanMessages = [
+        "Pick at least ONE thing! We can't go on a date and do nothing 😅",
+        "Hello?? Select something! 🙄",
+        "You want to just sit and stare at each other? Pick something! 😂",
+        "Even choosing 'Fighting' counts. Just pick SOMETHING 🥊",
+        "I'm not letting you through until you choose 😤",
+      ];
+
       document.getElementById("btn-to-final").addEventListener("click", () => {
+        const anySelected = document.querySelectorAll(".plan-option.selected").length > 0;
+        if (!anySelected) {
+          planError.textContent = funnyPlanMessages[noPickAttempts % funnyPlanMessages.length];
+          planError.classList.add("visible");
+          noPickAttempts++;
+          return;
+        }
+        planError.classList.remove("visible");
         ScreenManager.transitionTo("screen-final", () => {
           FinalScreen.init();
         });
