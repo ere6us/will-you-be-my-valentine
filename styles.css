@@ -95,11 +95,11 @@ html, body {
   background: var(--bg-dark);
 }
 
-/* Continue button — centered below the canvas text area */
+/* Continue button — pinned to the bottom of the screen */
 .btn-continue {
-  position: relative;
+  position: absolute;
+  bottom: 48px;
   z-index: 20;
-  margin-top: 260px;
   padding: 14px 36px;
   font-size: 1.15rem;
   font-weight: 600;
@@ -496,7 +496,7 @@ html, body {
   }
 
   .btn-continue {
-    margin-top: 200px;
+    bottom: 32px;
     padding: 12px 28px;
     font-size: 1rem;
   }
