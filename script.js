@@ -28,7 +28,7 @@
    */
   const CONFIG = {
     // ── Personalization ──
-    partnerName: "My Love",
+    partnerName: "baby",
 
     // ── Starfield Canvas ──
     starfield: {
@@ -43,17 +43,18 @@
     messages: [
       "Every single day, I cannot believe how lucky I am",
       "Amongst trillions and trillions of stars, over billions of years",
-      "To be alive, and to get to spend this life with you",
-      "Is so incredibly, unfathomably unlikely",
-      "And yet here I am, with the impossible chance to know you",
+      "To be alive, and to get to meet you, to know you, to love you",
+      "To irritate you with my lame jokes and dry roasts!",
+      "We've survived Long distance, my terrible singing skills and your typing mistakes",
+      "And I know we can survive anything as long as we have each other InshaAllah",
     ],
 
     // ── Final Lines (persist on screen after all messages) ──
     // Use {name} as a placeholder — it gets replaced with partnerName.
     finalLines: [
-      "I love you so much {name}, more than all the time and space in the universe can contain",
-      "And I can't wait to spend all the time in the world to share that love with you!",
-      "Happy Valentine's Day ❤️",
+      "I love you so much {name}, more than the universe can measure.",
+      "And I can't wait to spend forever annoying you, and loving you even more through it all.",
+      "In every universe, in every timeline. Always yours ❤️",
     ],
 
     // ── Continue Button ──
@@ -61,16 +62,21 @@
 
     // ── Proposal Screen ──
     proposal: {
-      question: "Will you be my Valentine?",
+      question: "Will you be mine?",
       yesText: "Yes ❤️",
       noText: "No 😢",
       noGrowthPx: 12,            // How many px the Yes button grows per No click
       noMessages: [               // Cycling question text when No is clicked
         "Are you sure? 🥺",
+        "Pakka? 😳",
+        "Soch lijiye... 💭",
         "Think again... 💕",
-        "Pretty please? 🌹",
+        "Please na? 🌹",
+        "Pretty please? 🥹",
         "I'll be sad... 😿",
+        "Bay Bayyyy 😭",
         "Last chance... 💘",
+        "Okay okay… one more chance 😌",
       ],
     },
 
@@ -309,7 +315,15 @@
       }
 
       // ── Final persistent lines ──
-      for (const slot of finalSlots) {
+      // Two-pass approach: measure total height first, then draw centered.
+      const gap = 20;
+      const blockHeights = finalSlots.map(s => measureWrappedHeight(s.text, fontSize));
+      const totalGroupHeight = blockHeights.reduce((a, b) => a + b, 0)
+                              + (blockHeights.length - 1) * gap;
+      let topY = canvas.height / 2 - totalGroupHeight / 2;
+
+      for (let si = 0; si < finalSlots.length; si++) {
+        const slot = finalSlots[si];
         let opacity = 0;
 
         if (frameNumber >= slot.fadeInStart) {
@@ -318,14 +332,16 @@
 
         if (opacity > 0) {
           ctx.fillStyle = `rgba(220, 200, 255, ${opacity})`;
-          const yOffset = slot.lineIndex * (fontSize + 16);
+          // Pass the center Y of this block (topY + half its height)
           drawWrappedText(
             slot.text,
             canvas.width / 2,
-            canvas.height / 2 - 30 + yOffset,
+            topY + blockHeights[si] / 2,
             fontSize
           );
         }
+
+        topY += blockHeights[si] + gap;
       }
 
       // Reset shadow
@@ -365,6 +381,34 @@
       for (let i = 0; i < lines.length; i++) {
         ctx.fillText(lines[i], x, startY + i * lineHeight);
       }
+
+      return totalHeight;
+    }
+
+    /**
+     * Measure how tall wrapped text will be without drawing it.
+     * @param {string} text - The text to measure.
+     * @param {number} fontSize - Current font size.
+     * @returns {number} Total pixel height.
+     */
+    function measureWrappedHeight(text, fontSize) {
+      const maxWidth = canvas.width * 0.85;
+      const words = text.split(" ");
+      let lineCount = 1;
+      let currentLine = "";
+
+      for (const word of words) {
+        const testLine = currentLine ? currentLine + " " + word : word;
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && currentLine) {
+          lineCount++;
+          currentLine = word;
+        } else {
+          currentLine = testLine;
+        }
+      }
+
+      return lineCount * (fontSize + 10);
     }
 
     /** Reveal the continue button with a fade-in. */

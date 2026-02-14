@@ -10,7 +10,8 @@ A cinematic, single-page Valentine's Day website with twinkling starfield, roman
 
 - **Starfield Intro** — 500 twinkling stars with sequentially fading romantic messages
 - **Proposal Screen** — "Will you be my Valentine?" where clicking No makes Yes grow hilariously larger
-- **Celebration Screen** — GIF, heartfelt message, floating hearts, and optional background audio
+- **Celebration Screen** — circular photo carousel, heartfelt message, floating hearts, and optional background audio
+- **Photo Carousel** — 5-slot circular carousel with arrow navigation and touch/swipe support
 - **Fully Responsive** — centered card on desktop, full-width on mobile
 - **One Config Object** — customize everything (names, messages, images, audio) in one place
 - **Dark Starry Theme** — consistent cinematic ambiance across all screens
@@ -29,22 +30,25 @@ will-you-be-my-valentine/
 ├── PLAN.md             ← Implementation plan and architecture
 ├── README.md           ← This file
 └── assets/
-    ├── celebration.gif ← Replace with your GIF
-    └── music.mp3       ← Replace with your audio
+    ├── us.jpg          ← Main/center carousel photo
+    ├── aatsu name.jpg  ← Side photo 1
+    ├── brush.jpg       ← Side photo 2
+    ├── coffee.jpg      ← Side photo 3
+    ├── flower.jpg      ← Side photo 4
+    └── music.mp3       ← Background audio
 ```
 
 ---
 
 ## 🎯 How to Use
 
-### 1. Replace Placeholder Assets
+### 1. Replace Assets
 
 | File | What to do |
 |---|---|
-| `assets/celebration.gif` | Replace with a cute/romantic GIF (e.g., from [Tenor](https://tenor.com) or [GIPHY](https://giphy.com)). Rename your file to `celebration.gif` or update the path in CONFIG. |
+| `assets/us.jpg` | Replace with your main photo (center of the carousel). Update `CONFIG.celebration.mainPhoto` if you change the filename. |
+| `assets/*.jpg` (side photos) | Replace with your own photos. Update the `CONFIG.celebration.sidePhotos` array to match your filenames. You can have any number of side photos. |
 | `assets/music.mp3` | Replace with a romantic MP3 track. Or set `CONFIG.audio.enabled = false` to disable audio entirely. |
-
-> **Note:** The `*.txt` placeholder files exist only to document what goes there. Delete them and add the real assets.
 
 ### 2. Customize the CONFIG
 
@@ -60,7 +64,8 @@ Open `script.js` and edit the `CONFIG` object at the very top (lines 33–93):
 | Yes / No button text | `CONFIG.proposal.yesText` / `.noText` |
 | Sassy "no" responses | `CONFIG.proposal.noMessages[]` |
 | Yes button growth per click | `CONFIG.proposal.noGrowthPx` (default: 12px) |
-| Celebration GIF path | `CONFIG.celebration.gifPath` |
+| Main carousel photo | `CONFIG.celebration.mainPhoto` |
+| Side carousel photos | `CONFIG.celebration.sidePhotos[]` — array of image paths |
 | Celebration message | `CONFIG.celebration.message` |
 | Sub-message | `CONFIG.celebration.subMessage` |
 | Audio file path | `CONFIG.audio.src` |
@@ -107,12 +112,15 @@ Just double-click `index.html` — no server needed.
 - [ ] Clicking "No" grows the "Yes" button each time
 - [ ] Question text cycles through sassy messages on No
 - [ ] Clicking "Yes" transitions to celebration screen
-- [ ] Celebration GIF displays
+- [ ] Photo carousel displays with center photo prominent
+- [ ] Carousel arrows rotate photos circularly
+- [ ] Touch/swipe works on mobile carousel
 - [ ] Celebration message and sub-message display
 - [ ] Audio plays (if enabled and file present)
 - [ ] Floating hearts animate and clean themselves up
-- [ ] Responsive on mobile (≤ 600px) — full-width cards
-- [ ] Responsive on desktop — centered card layout
+- [ ] Final starfield lines don't overlap on narrow screens
+- [ ] Responsive on mobile (≤ 600px) — full-width cards, 3-slot carousel
+- [ ] Responsive on desktop — centered card layout, 5-slot carousel
 - [ ] No console errors
 - [ ] CONFIG changes reflect immediately without code changes
 
@@ -124,6 +132,9 @@ Just double-click `index.html` — no server needed.
 - **Screen transitions**: CSS `opacity` + `visibility` transitions, managed by `ScreenManager.transitionTo()`.
 - **Starfield**: HTML5 Canvas with `requestAnimationFrame`. Message timing is data-driven from `CONFIG.messages` and `CONFIG.starfield.frameDuration`.
 - **No globals**: All JS is wrapped in a single IIFE. Modules (`Starfield`, `Proposal`, `Celebration`, `ScreenManager`) are scoped constants.
+- **Photo carousel**: CSS `data-slot` based positioning with 5 visible slots. JS tracks `currentIndex` and assigns slots circularly. Supports click arrows and touch swipe (40px threshold).
+- **Text wrapping**: Canvas messages use a two-pass measure-then-draw approach so multi-line text doesn't overlap on narrow mobile screens.
+- **Favicon**: Inline SVG emoji favicon — no external image file needed.
 - **Hearts cleanup**: Floating heart `<div>` elements are removed from the DOM on `animationend` to prevent memory leaks.
 - **Audio**: Triggered by user gesture (Yes click) to comply with browser autoplay policies.
 
